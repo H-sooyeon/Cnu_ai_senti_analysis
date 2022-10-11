@@ -18,15 +18,15 @@
 # Library를 사용하기 위해서는 import 작업 진행
 # - import는 도서관에서 필요한 책을 빌려오는 개념
 
-import requests # 책 전체를 빌려옴
-from bs4 import BeautifulSoup # bs4라는 책에서 beautifulsoup 1개 파트만 빌려옴
+import requests  # 책 전체를 빌려옴
+from bs4 import BeautifulSoup  # bs4라는 책에서 beautifulsoup 1개 파트만 빌려옴
 
 # 목표: Daum 뉴스 웹 페이지에서 제목과 본문 데이터를 수집!
 # 1.url: https://v.daum.net/v/20221006104506521
-url='https://v.daum.net/v/20221006104506521'
+url = 'https://v.daum.net/v/20221006103847242'
 # 2.requests로 해당 url의 html 전체 코드를 수집!
 
-result = requests.get(url) # request 함수가 client에게서 request를 직접 얻어 server에게 전달해주고 response를 얻어옴
+result = requests.get(url)  # request 함수가 client에게서 request를 직접 얻어 server에게 전달해주고 response를 얻어옴
 # print(result.text)
 # client인 웹 브라우저가 server인 Daum news에게 url에 대한 소스를 요청(requests)
 # server는 client는 url에 대한 소스를 제공(response) -> 200으로 표시
@@ -37,5 +37,23 @@ doc = BeautifulSoup(result.text, 'html.parser')
 # index    0  1  2  3
 #       - [5, 6, 7, 10] : List 내에는 다양한 데이터를 담을수 있다.
 # [5]
-title = doc.select('h3.tit_view')[0].getText()
+# h3ㄷ태그 중에 이름이 tit_view를 가진 select
+title = doc.select('h3.tit_view')[0].get_text()
+
+# html -> tag + 선택자
+# -tag: 기본적으로 정의 돼있음(h3, p, div, span ...)
+# section 태그를 부모로 둔 모든 자식 p태그들 select
+contents = doc.select('section p')
+
 print(f'뉴스 제목: {title}')
+# content = [<p1>, <p2>, <p3>, <p4> ...] : 복수의 본문 포함
+# <p1> = <p>~~~<p/>
+# 반복적인 작업 => for문
+content = ''
+for line in contents:  # 순서대로 <p>를 가져와서 line에 넣고 다음 코드 실행
+    content += line.get_text()
+print(f'뉴스본문: {content}')
+
+# 1) requests로 해당 url의 전체 소스코드를 가지고 옴
+# 2) beautifulsoup(bs4)에게 전체소스코드 전달 -> doc
+# 3) bs4가 전체 소스코드에서 원하는 데이터만 select
