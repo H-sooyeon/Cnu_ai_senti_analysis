@@ -11,11 +11,10 @@ doc = BeautifulSoup(result.text, 'html.parser')
 
 title = doc.select('h2.media_end_head_headline')[0].get_text()
 
-contents = doc.select('section p')
+#strip() : 앞뒤 공백을 제거해준다.
+#get_text() : 태그를 제거하고, text만 추출
+# - 회원가입
+contents = doc.select('div#dic_area')[0].get_text().strip()
 
-print(f'뉴스 제목: {title}')
-
-content = ''
-for line in contents:
-    content += line.get_text()
-print(f'뉴스본문: {content}')
+print(f'뉴스 제목: {title}')  #fstring
+print('본문: {}'.format(contents))  #format
