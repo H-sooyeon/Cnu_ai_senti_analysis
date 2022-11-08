@@ -32,6 +32,7 @@ def movie_review_crawler(movie_code):
     # set {제목, 리뷰, 평점, 작성자, 작성일자}
     url = f'https://movie.naver.com/movie/bi/mi/pointWriteFormList.naver?code={movie_code}&type=after&isActualPointWriteExecute=false&isMileageSubscriptionAlready=false&isMileageSubscriptionReject=false&page=1'
     result = requests.get(url)
+
     doc = BeautifulSoup(result.text, 'html.parser')
     all_count = doc.select('strong.total > em')[0].get_text()  # 리뷰 전체 count
 
@@ -57,10 +58,33 @@ def movie_review_crawler(movie_code):
 
         # review 한 건씩 수집
         for i, one in enumerate(review_list):
-            #  리뷰, 평점, 작성자, 작성일자
+            #  리뷰, 평점, 작성자, 작성일자  + 전처리
             score = one.select('div.star_score > em')[0].get_text()
-            review = one.select('div.score_reple > p > span')[-1].get_text().strip()
+            original_date = one.select('div.score_reple dt > em')[1].get_text()
 
-            print(f'# Score: {score}\n')
+            review = one.select('div.score_reple > p > span')[-1].get_text().strip()
+            # 전처리: 날짜 시간-> 날짜만 추출(시간 제거)
+            # 날짜는 항상 16글자로 구성
+            date = original_date[:10]  # 문자열 추출
+            # 문자열 추출
+            # [시작:끝+1], 끝은 포함 x
+            # [:15] 0~14
+            # [3:] 3~끝까지
+
+            original_writer = one.select('div.score_reple dt > em')[0].get_text().strip()
+            idx_end = original_writer.find('(')  # (의 인덱스번호를 찾는다.
+            writer = original_writer[:idx_end]
+
+            count += 1
+            print(f"## 리뷰_{count} #########################################################")
+            print(f'# Date: {date}')
+            print(f'# Writer: {writer}')
             print(f'# Review: {review}')
-        break
+            print(f'# Score: {score}\n')
+
+
+# 수집(리뷰) -> 저장(db) -> 전처리, 탐색 -> 딥러닝모델 학습 & 평가(긍부정 분석기) -> 시각화 or 실제 데이터 서비스
+
+# MongoDB 데이터베이스
+ # 1. Local(컴퓨터) 설치
+ # 2. 웹 클라우드 사용(ip, 내부 ip 사용 x)
