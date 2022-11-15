@@ -1,5 +1,8 @@
 # mongodb 연결, 데이터 1건 저장 테스트
 from pymongo import MongoClient
+from database import create_review
+
+create_review()
 
 # DB_HOST   : mongodb 접속 할 -> IP + PORT
 # DB_ID     : mongodb 계정
@@ -15,7 +18,7 @@ from pymongo import MongoClient
 # http: 80
 # mariadb: 3386
 # mongodb : 27017
-client = MongoClient('127.0.0.1', 27017)
+#client = MongoClient('127.0.0.1', 27017)
 
 # DBMS(데이터 베이스 관리 시스템) -> MongoDB
 # DB(데이터 베이스) : 데이터저장소 -> 다수의 DB(Shop, Blog)
@@ -27,8 +30,8 @@ client = MongoClient('127.0.0.1', 27017)
 
 # DB: movie
 # -> CollectionL review
-db = client['movie']  # mongodb에 공간(db)
-collection = db.get_collection('review')
+#db = client['movie']  # mongodb에 공간(db)
+#collection = db.get_collection('review')
 
-data = {'msg' : '몽고디비 데이터 테스트'}  # 데이터 1건 생성
-collection.insert_one(data)  # 1건의 데이터 저장
+#data = {'msg': '몽고디비 데이터 테스트'}  # 데이터 1건 생성
+#collection.insert_one(data)  # 1건의 데이터 저장
